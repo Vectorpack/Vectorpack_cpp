@@ -1,36 +1,174 @@
-#include "instance.hpp"
-#include "bin.hpp"
-#include "item.hpp"
+#include <utils.hpp>
 
 #include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <chrono>
+#include <stdexcept>
 
 using namespace std;
 using namespace vectorpack;
+using namespace std::chrono;
 
+/*
+ * Simple program to solve a Vector Bin Packing instance
+ * with the provided algorithms
+ * Inputs:
+ *  - the instance file (.vbp format)
+ *  - the packing algorithm to run (or a lower bound)
+ * Output:
+ *  - prints the solution (number of bins)
+ * Options:
+ *  - to write the solution allocation in a file
+ */
+
+/* Simple parsing of command line greatly inspired by
+ * https://cplusplus.com/articles/DEN36Up4/
+ */
+void show_usage(std::string prog_name)
+{
+    // TODO need to add an option to show a list of possible algorithms
+
+    std::cerr << "Usages: " << prog_name << " <instance_file.vbp> <algorithm_name> [<options>]\n"
+              << "Options:\n"
+              << "\t-o <filename>, --output <filename>: Writes the solution and allocation into <filename>. Disables usual output to stdout\n"
+              << "\t--no-time: Do not output algorithm running time\n"
+              << "\t--no-shuffle: Disables shuffling of items during load of the instance\n"
+              << std::endl;
+}
 
 int main(int argc, char** argv)
 {
-    string base_path("/home/mommess/Documents/Vectorpack/Vectorpack_cpp/");
-    string instance_name("test_20_3");
-
-    Instance inst("test", base_path + instance_name + ".vbp", false);
-
-    BinList bins;
-    Bin * b0 = new Bin(0, inst.getBinCapacities());
-    Bin * b1 = new Bin(1, inst.getBinCapacities());
-    bins.push_back(b0);
-    bins.push_back(b1);
-
-    //ItemList& items = inst.getItems();
-    auto item_it = inst.getItems().begin();
-    b0->addItem(*item_it);
-    item_it++;
-    b1->addItem(*item_it);
-
-    for (Bin* b : bins)
+    if (argc < 3)
     {
-        b->printAlloc();
+        show_usage(argv[0]);
+        return 1;
     }
+
+    string instance_file(argv[1]);
+    string instance_name = instance_file.substr(instance_file.find_last_of("/\\") + 1);
+    string algo_name(argv[2]);
+
+    bool print_alloc = false;
+    string output_alloc_file;
+    bool shuffle_items = true;
+    bool show_time = true;
+
+    for (int i = 3; i < argc; ++i)
+    {
+        std::string arg = argv[i];
+        if ((arg == "-o") || (arg == "--output"))
+        {
+            if (i+1 < argc) // Make sure we aren't at the end of argv
+            {
+                print_alloc = true;
+                output_alloc_file = argv[i+1];
+                ++i; // Because we consumed argument i+1
+            }
+            else
+            {
+                std::cerr << "Filename missing for option '--output'" << std::endl;
+                return 1;
+            }
+        }
+        else if (arg == "--no-shuffle")
+        {
+            shuffle_items = false;
+        }
+        else if (arg == "--no-time")
+        {
+            show_time = false;
+        }
+        else
+        {
+            std::cerr << "Unknow option: " << arg << std::endl;
+        }
+    }
+
+    Instance inst(instance_name, instance_file, shuffle_items);
+
+    int sol;
+    int LB = BPP_LB1(inst);
+    time_point<high_resolution_clock> start;
+    time_point<high_resolution_clock> stop;
+
+    string type_algo = algo_name.substr(0, 4);
+    BaseAlgo * algo;
+    bool is_multidim = false;
+    if (type_algo == "BIM-")
+    {
+        algo = createAlgoPairing(algo_name, inst);
+        is_multidim = true;
+    }
+    else if ( (type_algo == "WFDm") || (type_algo == "BFDm"))
+    {
+        algo = createAlgoWFDm(algo_name, inst);
+        is_multidim = true;
+    }
+    else
+    {
+        algo = createAlgoCentric(algo_name, inst);
+    }
+
+
+    if (is_multidim)
+    {
+        BaseAlgo * algoFF = createAlgoCentric("FF", inst);
+        int UB = algoFF->solveInstance(LB);
+        delete algoFF;
+
+        start = high_resolution_clock::now();
+        sol = algo->solveInstanceMultiBin(LB, UB);
+        stop = high_resolution_clock::now();
+    }
+    else
+    {
+        start = high_resolution_clock::now();
+        sol = algo->solveInstance(LB);
+        stop = high_resolution_clock::now();
+    }
+
+    string s = algo_name + " found solution: " + to_string(sol);
+    if (show_time)
+    {
+        float dur = (duration_cast<milliseconds>(stop - start)).count();
+        if (dur < 1000.0)
+        {
+            s+= " in " + to_string(dur) + " millisecond(s)";
+        }
+        else
+        {
+            dur = (duration_cast<seconds>(stop - start)).count();
+            s+= " in " + to_string(dur) + " second(s)";
+        }
+    }
+
+    if (!print_alloc) // Print solution to stdout
+    {
+        std::cout << s << std::endl;
+    }
+    else
+    {
+        ofstream f(output_alloc_file, ios_base::trunc);
+        if (!f.is_open())
+        {
+            string s("Cannot write file " + output_alloc_file);
+            throw std::runtime_error(s);
+        }
+
+        f << s << "\n";
+        f.flush();
+
+        algo->orderBinsId();
+        for (const Bin* bin : algo->getBins())
+        {
+            f << bin->formatAlloc() << "\n";
+        }
+        f.flush();
+        f.close();
+    }
+    delete algo;
 
     return 0;
 }

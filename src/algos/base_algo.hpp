@@ -20,10 +20,13 @@ public:
     BinList getBinsCopy() const;
     const ItemList& getItems() const;
 
+    void orderBinsId(); // Re-order bins in increasing id
+
     void setSolution(BinList& bins);
     void clearSolution();
 
-    virtual int solveInstance(int hint_nb_bins = 0) = 0;
+    virtual int solveInstance(int hint_nb_bins = 0) = 0; // For Centric algorithms
+    virtual int solveInstanceMultiBin(int LB, int UB) = 0; // For Multibin algorithms
 
 protected:
     virtual Bin* createNewBin(); // Open a new empty bin

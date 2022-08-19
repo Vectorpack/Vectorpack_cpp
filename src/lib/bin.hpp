@@ -31,7 +31,8 @@ public:
     void addItem(Item* item);
     bool doesItemFit(const SizeList& sizes) const;
 
-    void printAlloc() const;
+    const std::string formatAlloc(bool verbose = false) const;
+    void printAlloc(bool verbose = false) const;
 
     void setMeasure(float measure);
     const float getMeasure() const;
@@ -49,6 +50,7 @@ protected:
     float measure; // Placeholder for a combined residual capacity measure
 };
 
+bool bin_comparator_id_increasing(Bin* bina, Bin* binb);
 bool bin_comparator_measure_increasing(Bin* bina, Bin* binb);
 bool bin_comparator_measure_decreasing(Bin* bina, Bin* binb);
 bool bin_comparator_lexicographic_increasing(Bin* bina, Bin* binb);

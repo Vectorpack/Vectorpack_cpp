@@ -109,6 +109,12 @@ int AlgoFit::solveInstance(int hint_nb_bins)
     return getSolution();
 }
 
+int AlgoFit::solveInstanceMultiBin(int LB, int UB)
+{
+    std::string s = "With ItemCentric-type algorithm please call 'solveInstance' instead.";
+    throw std::runtime_error(s);
+}
+
 
 
 /* ================================================ */

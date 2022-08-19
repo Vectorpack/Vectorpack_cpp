@@ -294,3 +294,10 @@ int AlgoBinCentric::solveInstance(int hint_nb_bins)
     solved = true;
     return getSolution();
 }
+
+
+int AlgoBinCentric::solveInstanceMultiBin(int LB, int UB)
+{
+    std::string s = "With BinCentric-type algorithm please call 'solveInstance' instead.";
+    throw std::runtime_error(s);
+}

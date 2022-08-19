@@ -1,5 +1,7 @@
 #include "base_algo.hpp"
 
+#include <algorithm> // For stable_sort
+
 BaseAlgo::BaseAlgo(const std::string& algo_name, const Instance &instance):
     name(algo_name),
     items(ItemList(instance.getItems())),
@@ -50,6 +52,11 @@ BinList BaseAlgo::getBinsCopy() const
 const ItemList& BaseAlgo::getItems() const
 {
     return items;
+}
+
+void BaseAlgo::orderBinsId()
+{
+    std::stable_sort(bins.begin(), bins.end(), bin_comparator_measure_increasing);
 }
 
 void BaseAlgo::setSolution(BinList& bins)

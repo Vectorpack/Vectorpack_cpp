@@ -17,6 +17,7 @@ public:
                    const bool use_bin_weights);
 
     virtual int solveInstance(int hint_nb_bins = 0);
+    virtual int solveInstanceMultiBin(int LB, int UB); // Not used for BinCentric algos
 
 protected:
     virtual Bin* createNewBin();

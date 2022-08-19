@@ -15,6 +15,7 @@ public:
     AlgoFit(const std::string& algo_name, const Instance &instance);
 
     virtual int solveInstance(int hint_nb_bins = 0);
+    virtual int solveInstanceMultiBin(int LB, int UB); // Not used for ItemCentric algos
 
 protected:
     // These are the methods each variant of the Fit algo can re-implement

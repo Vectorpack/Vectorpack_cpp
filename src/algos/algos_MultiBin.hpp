@@ -44,7 +44,7 @@ public:
                 const bool dynamic_weights,
                 const bool use_bin_weights);
 
-    virtual int solveInstanceMultiBin(int LB, int UB) = 0; // Virtual pure
+    //virtual int solveInstanceMultiBin(int LB, int UB) = 0; // Virtual pure
     virtual bool trySolve(int nb_bins); // Try to solve the instance with given number of bins
 
 protected:
@@ -107,7 +107,7 @@ public:
                const COMBINATION combination, const WEIGHT weight,
                const bool dynamic_weights);
 
-    virtual int solveInstanceMultiBin(int LB, int UB) = 0; // Virtual pure
+    //virtual int solveInstanceMultiBin(int LB, int UB) = 0; // Virtual pure
     virtual bool trySolve(int nb_bins);
 
 protected:

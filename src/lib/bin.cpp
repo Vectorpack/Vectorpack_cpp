@@ -71,22 +71,33 @@ bool Bin::doesItemFit(const SizeList& item_sizes) const
     return true;
 }
 
-void Bin::printAlloc() const
+const std::string Bin::formatAlloc(bool verbose) const
 {
     stringstream ss;
-    ss << "Bin_" << id << "(";
+    ss << "Bin_" << id;
 
-    for (int h = 0; h < dimensions; h++)
+    if(verbose)
     {
-        ss << to_string(getAvailableCapDim(h)) << "/" << to_string(getMaxCapDim(h)) << " ";
-    }
-    ss << to_string(getMeasure()) << "):";
+        ss << " (";
 
+        for (int h = 0; h < dimensions; h++)
+        {
+            ss << to_string(getAvailableCapDim(h)) << "/" << to_string(getMaxCapDim(h)) << " ";
+        }
+        ss << to_string(getMeasure()) << ")";
+    }
+
+    ss << ":";
     for (int item_id : alloc_list)
     {
         ss << " " << to_string(item_id);
     }
-    cout << ss.str() << endl;
+    return ss.str();
+}
+
+void Bin::printAlloc(bool verbose) const
+{
+    std::cout << formatAlloc() << std::endl;
 }
 
 
@@ -105,6 +116,12 @@ const int Bin::getNbDimensions() const
 {
     return dimensions;
 }
+
+bool vectorpack::bin_comparator_id_increasing(Bin* bina, Bin* binb)
+{
+    return(bina->getId() < binb->getId());
+}
+
 bool vectorpack::bin_comparator_measure_increasing(Bin* bina, Bin* binb)
 {
     return(bina->getMeasure() < binb->getMeasure());
