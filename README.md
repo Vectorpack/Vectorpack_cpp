@@ -8,6 +8,9 @@ A simple executable is also provided to call an algorithm on an instance of the 
 The instance input file must be in the VBP format introduced for the [VPSolver](https://github.com/fdabrandao/vpsolver) by F. Brandão (see [manual here](https://github.com/fdabrandao/vpsolver/blob/master/docs/vpsolver_manual.pdf)).
 
 
+The code of this repository is under the LGPL v3.0 license.
+Contributions in this project are welcome!
+
 
 Installation
 ============

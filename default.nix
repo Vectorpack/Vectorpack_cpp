@@ -7,7 +7,7 @@ let
         vectorpack_lib = pkgs.stdenv.mkDerivation {
             name = "vectorpack_cpp";
 
-            buildInputs = with pkgs; [
+            nativeBuildInputs = with pkgs; [
                 cmake
             ];
 
