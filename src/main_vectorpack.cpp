@@ -88,48 +88,70 @@ int main(int argc, char** argv)
 
     Instance inst(instance_name, instance_file, shuffle_items);
 
-    int sol;
-    int LB = BPP_LB1(inst);
     time_point<high_resolution_clock> start;
     time_point<high_resolution_clock> stop;
 
-    string type_algo = algo_name.substr(0, 4);
+    // First check if lower bound is asked
+    bool only_LB = false;
+    int sol;
     BaseAlgo * algo;
-    bool is_multidim = false;
-    if (type_algo == "BIM-")
-    {
-        algo = createAlgoPairing(algo_name, inst);
-        is_multidim = true;
-    }
-    else if ( (type_algo == "WFDm") || (type_algo == "BFDm"))
-    {
-        algo = createAlgoWFDm(algo_name, inst);
-        is_multidim = true;
-    }
-    else
-    {
-        algo = createAlgoCentric(algo_name, inst);
-    }
 
-
-    if (is_multidim)
+    if (algo_name == "LB_clique")
     {
-        BaseAlgo * algoFF = createAlgoCentric("FF", inst);
-        int UB = algoFF->solveInstance(LB);
-        delete algoFF;
-
+        only_LB = true;
         start = high_resolution_clock::now();
-        sol = algo->solveInstanceMultiBin(LB, UB);
+        sol = LB_clique(inst);
         stop = high_resolution_clock::now();
     }
-    else
+    else if (algo_name == "LB_BPP")
     {
+        only_LB = true;
         start = high_resolution_clock::now();
-        sol = algo->solveInstance(LB);
+        sol = LB_BPP(inst);
         stop = high_resolution_clock::now();
     }
+    else // This is an algorithm
+    {
+        int LB = LB_BPP(inst);
+        string type_algo = algo_name.substr(0, 4);
 
-    string s = algo_name + " found solution: " + to_string(sol);
+        bool is_multidim = false;
+        if (type_algo == "BIM-")
+        {
+            algo = createAlgoPairing(algo_name, inst);
+            is_multidim = true;
+        }
+        else if ( (type_algo == "WFDm") || (type_algo == "BFDm"))
+        {
+            algo = createAlgoWFDm(algo_name, inst);
+            is_multidim = true;
+        }
+        else
+        {
+            algo = createAlgoCentric(algo_name, inst);
+        }
+
+        if (is_multidim)
+        {
+            BaseAlgo * algoFF = createAlgoCentric("FF", inst);
+            int UB = algoFF->solveInstance(LB);
+            delete algoFF;
+
+            start = high_resolution_clock::now();
+            sol = algo->solveInstanceMultiBin(LB, UB);
+            stop = high_resolution_clock::now();
+        }
+        else
+        {
+            start = high_resolution_clock::now();
+            sol = algo->solveInstance(LB);
+            stop = high_resolution_clock::now();
+        }
+    }
+
+
+
+    string s = algo_name + ": " + to_string(sol) + " bins";
     if (show_time)
     {
         int dur = (duration_cast<milliseconds>(stop - start)).count();
@@ -160,15 +182,22 @@ int main(int argc, char** argv)
         f << s << "\n";
         f.flush();
 
-        algo->orderBinsId();
-        for (const Bin* bin : algo->getBins())
+        if (!only_LB)
         {
-            f << bin->formatAlloc() << "\n";
+            algo->orderBinsId();
+            for (const Bin* bin : algo->getBins())
+            {
+                f << bin->formatAlloc() << "\n";
+            }
+            f.flush();
         }
-        f.flush();
         f.close();
     }
-    delete algo;
+
+    if (!only_LB)
+    {
+        delete algo;
+    }
 
     return 0;
 }

@@ -5,7 +5,7 @@
 #include <instance.hpp>
 using namespace vectorpack;
 
-int BPP_LB1(const Instance & instance);
+int LB_BPP(const Instance & instance);
 
 int LB_clique(const Instance & instance);
 

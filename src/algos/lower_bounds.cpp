@@ -4,7 +4,7 @@
 #include <vector>
 #include <algorithm>
 
-int BPP_LB1(const Instance & instance)
+int LB_BPP(const Instance & instance)
 {
     SizeList sums(instance.getDimensions(), 0);
     for (Item* item : instance.getItems())
