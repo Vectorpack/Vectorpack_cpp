@@ -97,7 +97,7 @@ const std::string Bin::formatAlloc(bool verbose) const
 
 void Bin::printAlloc(bool verbose) const
 {
-    std::cout << formatAlloc() << std::endl;
+    std::cout << formatAlloc(verbose) << std::endl;
 }
 
 

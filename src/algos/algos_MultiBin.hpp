@@ -21,11 +21,9 @@ using namespace vectorpack;
  * - iterative increasing steps from LB to UB, with steps of X bins
  *   X can be an input parameter of the algorithm, or computed
  *   from the values of UB and LB (for example, 10% or 5% of (UB-LB))
- * - modified binary search with 1 bin neightborhood
- *   (because of non-monotonicity, if failure at the target nb bins
- *    check also with +-1 bin)
+ * - binary search
  *
- * Other variant: incremental bin activation:
+ * Other possible variant to implement: incremental bin activation:
  *   start with LB and try to pack items
  *   then, while there are remaining items, activate X new bins
  *   and resume the algorithm with the current partial solution
@@ -44,7 +42,6 @@ public:
                 const bool dynamic_weights,
                 const bool use_bin_weights);
 
-    //virtual int solveInstanceMultiBin(int LB, int UB) = 0; // Virtual pure
     virtual bool trySolve(int nb_bins); // Try to solve the instance with given number of bins
 
 protected:
@@ -107,7 +104,6 @@ public:
                const COMBINATION combination, const WEIGHT weight,
                const bool dynamic_weights);
 
-    //virtual int solveInstanceMultiBin(int LB, int UB) = 0; // Virtual pure
     virtual bool trySolve(int nb_bins);
 
 protected:

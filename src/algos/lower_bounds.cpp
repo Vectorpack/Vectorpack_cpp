@@ -1,7 +1,6 @@
- #include "lower_bounds.hpp"
+#include "lower_bounds.hpp"
 
 #include <cmath>
-#include <iostream> // For debugging, TODO remove it
 #include <vector>
 #include <algorithm>
 
@@ -61,8 +60,6 @@ int LB_clique(const Instance & instance)
                 // Update their degrees
                 degrees[i]+=1;
                 degrees[j]+=1;
-
-                //std::cout << "Adjacent items of indices " << i << " " << j << std::endl;
             }
         }
     }
@@ -84,7 +81,7 @@ int LB_clique(const Instance & instance)
         int y = argmax_degree(degrees);
         if (y == -1)
         {
-            std::cout << "ERROR while computing the LB with clique" << std::endl;
+            // TODO throw an error?
             return -1;
         }
 

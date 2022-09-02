@@ -3,13 +3,14 @@
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
-//#include <algorithm>
+#include <algorithm> // For std::shuffle
+#include <random> // For the random generator
 #include <bits/stdc++.h>
 
 using namespace std;
 using namespace vectorpack;
 
-auto RANDOM_SEED = default_random_engine(23); // For deterministic shuffles
+auto RANDOM_SEED = 23; // For deterministic shuffles
 
 Instance::Instance(const std::string instance_name,
                    const std::string& filename,
@@ -56,7 +57,7 @@ Instance::Instance(const std::string instance_name,
         // Just to break optimality on handcrafted instances (such as Falkenauer's triplets)
         if (shuffle_items)
         {
-            std::shuffle(item_list.begin(), item_list.end(), RANDOM_SEED);
+            std::shuffle(item_list.begin(), item_list.end(), std::default_random_engine(RANDOM_SEED));
         }
     }
     catch (exception& e)

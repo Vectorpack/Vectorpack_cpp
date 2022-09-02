@@ -4,7 +4,6 @@
 #include <cmath>
 #include <limits> // For infinity value
 
-#include <iostream> // TODO remove, for fast debugging
 
 AlgoBinCentric::AlgoBinCentric(const std::string &algo_name, const Instance &instance,
                                const SCORE score, const WEIGHT weight,

@@ -4,7 +4,6 @@
 #include <cmath> // For exp
 #include <stdexcept> // For throwing stuff
 
-#include <iostream> // Simple debugging TODO remove it
 
 AlgoFit::AlgoFit(const std::string& algo_name, const Instance &instance):
     BaseAlgo(algo_name, instance),
@@ -159,7 +158,7 @@ AlgoFFD::AlgoFFD(const std::string& algo_name, const Instance &instance,
 
 void AlgoFFD::addItemToBin(Item* item, Bin* bin)
 {
-    bin->addItem(item);
+    BaseAlgo::addItemToBin(item, bin);
 
     if (is_FFD_dynamic)
     {
@@ -295,14 +294,16 @@ void AlgoBFD_T1::sortBins()
     else
     {
         // The measure of only one bin has changed, no need to perform complete sort
+        // but the bubbling in BOTH directions is required, as it depends on the size measures
         bubble_bin_up(bins.begin(), bins.end(), bin_comparator_measure_increasing);
+        bubble_bin_down(bins.begin(), bins.end(), bin_comparator_measure_decreasing);
     }
 }
 
 
 void AlgoBFD_T1::addItemToBin(Item *item, Bin *bin)
 {
-    bin->addItem(item);
+    BaseAlgo::addItemToBin(item, bin);
 
     if (is_FFD_dynamic)
     {
@@ -399,7 +400,7 @@ void AlgoBFD_T2::sortBins()
 
 void AlgoBFD_T2::addItemToBin(Item *item, Bin *bin)
 {
-    bin->addItem(item);
+    BaseAlgo::addItemToBin(item, bin);
 
     if (is_FFD_dynamic)
     {
@@ -537,7 +538,9 @@ void AlgoWFD_T1::sortBins()
     else
     {
         // The measure of only one bin has changed, no need to perform complete sort
+        // but the bubbling in BOTH directions is required, as it depends on the size measures
         bubble_bin_down(bins.begin(), bins.end(), bin_comparator_measure_decreasing);
+        bubble_bin_up(bins.begin(), bins.end(), bin_comparator_measure_decreasing);
     }
 }
 

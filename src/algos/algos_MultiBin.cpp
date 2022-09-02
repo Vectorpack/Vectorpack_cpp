@@ -4,7 +4,6 @@
 #include <cmath>
 #include <algorithm> // For stable_sort
 
-#include <iostream> // TODO TO BE REMOVED
 
 /* ================================================ */
 /* ================================================ */
@@ -232,8 +231,6 @@ int AlgoPairing_Increment::solveInstanceMultiBin(int LB, int UB)
         }
     }
 
-    //std::cout << "Starting with bin increment: " << bin_increment << std::endl;
-
     int target_bins = LB;
     bool sol_found = trySolve(target_bins);
     bool last_try = false;
@@ -241,11 +238,6 @@ int AlgoPairing_Increment::solveInstanceMultiBin(int LB, int UB)
     {
         // There are remaining items to pack
         // But no bin can accommodate an item anymore
-        /*if (target_bins > UB)
-        {
-            // Cannot find better solution than UB
-            return -1;
-        }*/
 
         // Increment the number of bins
         target_bins += bin_increment;
@@ -256,9 +248,7 @@ int AlgoPairing_Increment::solveInstanceMultiBin(int LB, int UB)
             last_try = true;
         }
 
-        //std::cout << "Trying Incr with " << target_bins << " bins" << std::endl;
         sol_found = trySolve(target_bins);
-        //std::cout << "Could solve? " << sol_found << std::endl;
     }
 
     int answer = target_bins;
@@ -267,7 +257,6 @@ int AlgoPairing_Increment::solveInstanceMultiBin(int LB, int UB)
         answer = -1;
     }
     return answer;
-    //return target_bins;
 }
 
 
@@ -302,7 +291,6 @@ int AlgoPairing_BinSearch::solveInstanceMultiBin(int LB, int UB)
     if (!trySolve(UB))
     {
         // If no solution found, no need to continue the search
-        //std::cout << "No solution found for " << UB << std::endl;
         return -1;
     }
 
@@ -314,7 +302,6 @@ int AlgoPairing_BinSearch::solveInstanceMultiBin(int LB, int UB)
     while (LB < UB)
     {
         target_bins = std::floor((float)(LB + UB) / 2.0);
-        //std::cout << "Trying with " << target_bins << " bins (LB: " << LB  << " UB: " << UB << ")" << std::endl;
 
         if (trySolve(target_bins))
         {
@@ -333,113 +320,6 @@ int AlgoPairing_BinSearch::solveInstanceMultiBin(int LB, int UB)
     return UB;
 }
 
-// Implements a relaxed version of Binary Search
-/*
-int AlgoPairing_BinSearch::solveInstanceMultiBin(int LB, int UB)
-{
-    // Relaxed variant of Binary Search that also checks the
-    // neighbors (+1 or -1 bin) if a target nb_bin is found infeasible
-    // The value of LB is kept as a possibly feasible lower bound
-
-    // First, try to find a solution with UB
-    if (!trySolve(UB))
-    {
-        // If no solution found, try neighbor with -1 bin
-        //std::cout << "No solution found for " << UB << std::endl;
-        UB-= 1;
-        if(!trySolve(UB))
-        {
-            //std::cout << "No solution found for " << UB << std::endl;
-            return -1;
-        }
-    }
-
-    // A solution with UB (or UB-1) was found, start relaxed binary search
-
-    // Store the current solution
-    updateBestBins(getBinsCopy());
-    int target_bins;
-
-    // Then iteratively try to improve on the solution
-    int nb_iter = 0;
-    while((LB+2) < UB)
-    {
-        target_bins = std::floor((LB + UB)/2);
-        //std::cout << "Trying with " << target_bins << " bins (LB: " << LB  << " UB: " << UB << ")" << std::endl;
-
-        bool sol_found = true;
-        if (!trySolve(target_bins))
-        {
-            // Try with neighbors: -1 bin
-            target_bins-=1;
-            //std::cout << "Trying with -1 neighbor: " << target_bins << std::endl;
-            if (!trySolve(target_bins))
-            {
-                // Try with neighbors: +1 bin
-                target_bins+=2; // To be original target_bins+1
-                //std::cout << "Trying with +1 neighbor: " << target_bins << std::endl;
-                if (!trySolve(target_bins))
-                {
-                    sol_found = false;
-
-                    // Update lower bound of search
-                    LB = target_bins+1;
-                    //std::cout << "No solution found, updating LB: " << target_bins+1 << std::endl;
-                }
-            }
-        }
-
-        if (sol_found)
-        {
-            // A solution was found with target_bins (being either the original value or +/-1 bin)
-            // Update the upper bound and the best solution found so far
-            //std::cout << "Solution found with " << target_bins << " bins, updating UB" << std::endl;
-            UB = target_bins;
-            updateBestBins(getBinsCopy());
-        }
-
-        nb_iter+=1;
-    }
-
-    // LB+2 >= UB there are 2 cases: LB,x,UB or LB,UB
-    // Try first with LB, then with LB+1 and conclude
-    target_bins = LB;
-    bool sol_found = true;
-    //std::cout << "Trying last round with LB: " << target_bins << std::endl;
-    if (!trySolve(target_bins))
-    {
-        target_bins+=1; // To be LB+1
-        //std::cout << "Trying last round with LB+1: " << target_bins << std::endl;
-        if (!trySolve(target_bins))
-        {
-            sol_found = false;
-
-            // Update lower bound of search
-            LB = target_bins+1;
-            //std::cout << "No solution found, updating LB: " << target_bins+1 << std::endl;
-        }
-    }
-
-    if (sol_found)
-    {
-        UB = target_bins;
-        //std::cout << "Found solution in last round with " << target_bins << std::endl;
-        //updateBestBins(getBinsCopy());
-    }
-    else
-    {
-        // Best solution found was before this last step, update solution
-        setSolution(best_bins);
-        best_bins.clear();
-    }
-    nb_iter+=1;
-
-    //std::cout << "Found relaxed best solution in " << nb_iter << " iterations: " << bins.size() << " and " << UB << std::endl;
-    return UB;
-}*/
-
-
-
 
 /* ================================================ */
 /* ================================================ */
@@ -448,7 +328,10 @@ AlgoWFDm::AlgoWFDm(const std::string &algo_name, const Instance &instance,
                        const COMBINATION combination, const WEIGHT weight,
                        const bool dynamic_weights):
     AlgoWFD_T1(algo_name, instance, combination, weight, dynamic_weights)
-{ }
+{
+    create_bins_at_end = true; // Was set to false for regular WFD algorithm
+    // but we don't need this as all bins are created at the init stage in multi-bin algorithms
+}
 
 
 int AlgoWFDm::solveInstance(int hint_nb_bins)
@@ -596,7 +479,9 @@ void AlgoWFDm::sortBins(BinList::iterator first_bin, BinList::iterator last_bin)
     else
     {
         // The measure of only one bin has changed, no need to perform complete sort
+        // but the bubbling in BOTH directions is required, as it depends on the size measures
         bubble_bin_down(first_bin, last_bin, bin_comparator_measure_decreasing);
+        bubble_bin_up(first_bin, last_bin, bin_comparator_measure_increasing);
     }
 }
 
@@ -631,8 +516,6 @@ int AlgoWFDm_Increment::solveInstanceMultiBin(int LB, int UB)
         }
     }
 
-    //std::cout << "Starting with bin increment: " << bin_increment << std::endl;
-
     int target_bins = LB;
     bool sol_found = trySolve(target_bins);
     bool last_try = false;
@@ -640,11 +523,6 @@ int AlgoWFDm_Increment::solveInstanceMultiBin(int LB, int UB)
     {
         // There are remaining items to pack
         // But no bin can accommodate an item anymore
-        /*if (target_bins > UB)
-        {
-            // Cannot find better solution than UB
-            return -1;
-        }*/
 
         // Increment the number of bins
         target_bins += bin_increment;
@@ -655,9 +533,7 @@ int AlgoWFDm_Increment::solveInstanceMultiBin(int LB, int UB)
             last_try = true;
         }
 
-        //std::cout << "Trying Incr with " << target_bins << " bins" << std::endl;
         sol_found = trySolve(target_bins);
-        //std::cout << "Could solve? " << sol_found << std::endl;
     }
 
     int answer = target_bins;
@@ -666,7 +542,6 @@ int AlgoWFDm_Increment::solveInstanceMultiBin(int LB, int UB)
         answer = -1;
     }
     return answer;
-    //return target_bins;
 }
 
 /* ================================================ */
@@ -704,7 +579,6 @@ int AlgoWFDm_BinSearch::solveInstanceMultiBin(int LB, int UB)
     if (!trySolve(UB))
     {
         // If no solution found, no need to continue the search
-        //std::cout << "No solution found for " << UB << std::endl;
         return -1;
     }
 
@@ -716,7 +590,6 @@ int AlgoWFDm_BinSearch::solveInstanceMultiBin(int LB, int UB)
     while (LB < UB)
     {
         target_bins = std::floor((float)(LB + UB) / 2.0);
-        //std::cout << "Trying with " << target_bins << " bins (LB: " << LB  << " UB: " << UB << ")" << std::endl;
 
         if (trySolve(target_bins))
         {
@@ -762,7 +635,9 @@ void AlgoBFDm_Increment::sortBins(BinList::iterator first_bin, BinList::iterator
     else
     {
         // The measure of only one bin has changed, no need to perform complete sort
+        // but the bubbling in BOTH directions is required, as it depends on the size measures
         bubble_bin_up(first_bin, last_bin, bin_comparator_measure_increasing);
+        bubble_bin_down(first_bin, last_bin, bin_comparator_measure_decreasing);
     }
 }
 
@@ -793,6 +668,8 @@ void AlgoBFDm_BinSearch::sortBins(BinList::iterator first_bin, BinList::iterator
     else
     {
         // The measure of only one bin has changed, no need to perform complete sort
+        // but the bubbling in BOTH directions is required, as it depends on the size measures
         bubble_bin_up(first_bin, last_bin, bin_comparator_measure_increasing);
+        bubble_bin_down(first_bin, last_bin, bin_comparator_measure_decreasing);
     }
 }

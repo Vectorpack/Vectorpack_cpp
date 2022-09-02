@@ -16,16 +16,13 @@ using namespace std::chrono;
  * with the provided algorithms
  * Inputs:
  *  - the instance file (.vbp format)
- *  - the packing algorithm to run (or a lower bound)
+ *  - the name of the packing algorithm to run (or a lower bound)
  * Output:
  *  - prints the solution (number of bins)
  * Options:
  *  - to write the solution allocation in a file
  */
 
-/* Simple parsing of command line greatly inspired by
- * https://cplusplus.com/articles/DEN36Up4/
- */
 void show_usage(std::string prog_name)
 {
     // TODO need to add an option to show a list of possible algorithms
@@ -55,6 +52,8 @@ int main(int argc, char** argv)
     bool shuffle_items = true;
     bool show_time = true;
 
+    // Parsing options from CLI greatly inspired by
+    // https://cplusplus.com/articles/DEN36Up4/
     for (int i = 3; i < argc; ++i)
     {
         std::string arg = argv[i];
@@ -85,6 +84,7 @@ int main(int argc, char** argv)
             std::cerr << "Unknow option: " << arg << std::endl;
         }
     }
+    // End of parsing options
 
     Instance inst(instance_name, instance_file, shuffle_items);
 
@@ -132,7 +132,7 @@ int main(int argc, char** argv)
     string s = algo_name + " found solution: " + to_string(sol);
     if (show_time)
     {
-        float dur = (duration_cast<milliseconds>(stop - start)).count();
+        int dur = (duration_cast<milliseconds>(stop - start)).count();
         if (dur < 1000.0)
         {
             s+= " in " + to_string(dur) + " millisecond(s)";

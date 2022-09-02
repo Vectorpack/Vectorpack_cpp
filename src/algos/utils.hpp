@@ -18,6 +18,7 @@ std::vector<std::string> splitString(const std::string& str);
 // Only for ItemCentric and BinCentric algorithms
 BaseAlgo* createAlgoCentric(const std::string& algo_name, const Instance &instance);
 
+// Creator of multi-bin algorithms
 AlgoPairing* createAlgoPairing(const std::string& algo_name, const Instance &instance);
 AlgoWFDm* createAlgoWFDm(const std::string& algo_name, const Instance &instance);
 
