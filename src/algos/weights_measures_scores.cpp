@@ -31,7 +31,7 @@ void utilComputeWeights(const WEIGHT weight,
                 if (total_norm_size[h] <= ZERO_THRESHOLD)
                 {
                     // If the total size of items is "0" in that dimension, desactivate the dimension
-                    // by setting the weight to 0 (+ avoids a division by 0 or weight of value clost to +infinity)
+                    // by setting the weight to 0 (+ avoids a division by 0 or weight of value close to +infinity)
                     weights_list[h] = 0.0;
                 }
                 else
@@ -84,21 +84,37 @@ void utilComputeWeightsRatio(const WEIGHT weight,
 
 float utilComputeNorm2(const SizeList &list)
 {
-    float val = 0.0;
-    for (auto &i : list)
+    if (list.size() > 1)
     {
-        val += i*i;
+        float val = 0.0;
+        for (auto &i : list)
+        {
+            val += i*i;
+        }
+        return std::sqrt(val);
     }
-    return std::sqrt(val);
+    else
+    {
+        // Only one dimension
+        return list[0];
+    }
 }
 
 float utilComputeNorm2(const SizeList &list, const SizeList &normalization_list)
 {
-    float val = 0.0;
-    for (int i = 0; i < list.size(); i++)
+    if (list.size() > 1)
     {
-        float norm_val = ((float)list[i]) / normalization_list[i];
-        val += norm_val * norm_val;
+        float val = 0.0;
+        for (int i = 0; i < list.size(); i++)
+        {
+            float norm_val = ((float)list[i]) / normalization_list[i];
+            val += norm_val * norm_val;
+        }
+        return std::sqrt(val);
     }
-    return std::sqrt(val);
+    else
+    {
+        // Only one dimension
+        return ((float)list[0] / normalization_list[0]);
+    }
 }

@@ -50,9 +50,10 @@ void utilComputeWeightsRatio(const WEIGHT weight,
                              const FloatList& total_norm_size,
                              const FloatList& total_norm_residual_capacity);
 
-
 // Utility function to compute the Norm2 of item sizes or bin capacities
 float utilComputeNorm2(const SizeList &list);
+
+// Utility function to compute the Norm2 of normalized item sizes or bin capacities
 // normalization_list is the list to normalize each coefficient of list before computing the norm2
 float utilComputeNorm2(const SizeList &list, const SizeList &normalization_list);
 
