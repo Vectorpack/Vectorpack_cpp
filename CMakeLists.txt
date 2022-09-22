@@ -59,7 +59,7 @@ if (include_algorithms)
     )
 
     set(HEADER_ALGOS
-        # TODO will need to hide some header files
+        # TODO hide some header files?
         src/algos/weights_measures_scores.hpp
         src/algos/base_algo.hpp
         src/algos/algos_ItemCentric.hpp
@@ -80,12 +80,11 @@ add_library(${lib_name} STATIC
 
 target_include_directories(${lib_name}
     PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/src/lib>
-    PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/src/algos># TODO will need to hide some header files in the algos
+    PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/src/algos># TODO hide some header files?
 
     PUBLIC $<INSTALL_INTERFACE:lib>
     PUBLIC $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
 )
-#set_target_properties(${lib_name} PROPERTIES OUTPUT_NAME "Vectorpack")
 set_target_properties(${lib_name} PROPERTIES PUBLIC_HEADER "${HEADER_LIB};${HEADER_ALGOS}")
 
 
@@ -99,7 +98,6 @@ endif()
 ###
 
 # Install rule
-# TODO
 ### Depending whether only executable should be installed
 ### or the basic library only
 if (build_executable)

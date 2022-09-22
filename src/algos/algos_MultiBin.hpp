@@ -101,7 +101,7 @@ class AlgoWFDm : public AlgoWFD_T1
 {
 public:
     AlgoWFDm(const std::string& algo_name, const Instance &instance,
-               const COMBINATION combination, const WEIGHT weight,
+               const MEASURE measure, const WEIGHT weight,
                const bool dynamic_weights);
 
     virtual bool trySolve(int nb_bins);
@@ -127,7 +127,7 @@ class AlgoWFDm_Increment : public AlgoWFDm
 {
 public:
     AlgoWFDm_Increment(const std::string& algo_name, const Instance &instance,
-               const COMBINATION combination, const WEIGHT weight,
+               const MEASURE measure, const WEIGHT weight,
                const bool dynamic_weights,
                const int bin_increment_percent);
 
@@ -142,7 +142,7 @@ class AlgoWFDm_BinSearch : public AlgoWFDm
 {
 public:
     AlgoWFDm_BinSearch(const std::string& algo_name, const Instance &instance,
-                 const COMBINATION combination, const WEIGHT weight,
+                 const MEASURE measure, const WEIGHT weight,
                  const bool dynamic_weights);
 
     virtual int solveInstanceMultiBin(int LB, int UB);
@@ -162,7 +162,7 @@ class AlgoBFDm_Increment : public AlgoWFDm_Increment
 {
 public:
     AlgoBFDm_Increment(const std::string& algo_name, const Instance &instance,
-               const COMBINATION combination, const WEIGHT weight,
+               const MEASURE measure, const WEIGHT weight,
                const bool dynamic_weights,
                const int bin_increment_percent);
 protected:
@@ -174,7 +174,7 @@ class AlgoBFDm_BinSearch : public AlgoWFDm_BinSearch
 {
 public:
     AlgoBFDm_BinSearch(const std::string& algo_name, const Instance &instance,
-                 const COMBINATION combination, const WEIGHT weight,
+                 const MEASURE measure, const WEIGHT weight,
                  const bool dynamic_weights);
 protected:
     virtual void sortBins(BinList::iterator first_bin, BinList::iterator last_bin);

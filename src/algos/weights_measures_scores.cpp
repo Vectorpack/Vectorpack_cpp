@@ -25,7 +25,7 @@ void utilComputeWeights(const WEIGHT weight,
                 weights_list[h] = std::exp(0.01 * total_norm_size[h] / n);
             }
             break;
-        case WEIGHT::DIVIDED_AVERAGE:
+        case WEIGHT::RECIPROCAL_AVERAGE:
             for (int h = 0; h < dimensions; ++h)
             {
                 if (total_norm_size[h] <= ZERO_THRESHOLD)
@@ -52,21 +52,7 @@ void utilComputeWeightsRatio(const WEIGHT weight,
 {
     // If total residual capacity of the bins is "0" in a dimension, desactivate the dimension
     // by setting the weight to 0 (+ avoids a division by 0 or weight of value close to +infinity)
-    if (weight == WEIGHT::RESIDUAL_RATIO)
-    {
-        for (int h = 0; h < dimensions; ++h)
-        {
-            if (total_norm_residual_capacity[h] <= ZERO_THRESHOLD)
-            {
-                weights_list[h] = 0.0;
-            }
-            else
-            {
-                weights_list[h] = 1.0 / total_norm_residual_capacity[h];
-            }
-        }
-    }
-    else if (weight == WEIGHT::UTILISATION_RATIO)
+    if (weight == WEIGHT::UTILIZATION_RATIO)
     {
         for (int h = 0; h < dimensions; ++h)
         {

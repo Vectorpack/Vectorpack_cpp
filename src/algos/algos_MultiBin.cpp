@@ -325,9 +325,9 @@ int AlgoPairing_BinSearch::solveInstanceMultiBin(int LB, int UB)
 /* ================================================ */
 /* ================================================ */
 AlgoWFDm::AlgoWFDm(const std::string &algo_name, const Instance &instance,
-                       const COMBINATION combination, const WEIGHT weight,
+                       const MEASURE measure, const WEIGHT weight,
                        const bool dynamic_weights):
-    AlgoWFD_T1(algo_name, instance, combination, weight, dynamic_weights)
+    AlgoWFD_T1(algo_name, instance, measure, weight, dynamic_weights)
 {
     create_bins_at_end = true; // Was set to false for regular WFD algorithm
     // but we don't need this as all bins are created at the init stage in multi-bin algorithms
@@ -491,10 +491,10 @@ void AlgoWFDm::sortBins(BinList::iterator first_bin, BinList::iterator last_bin)
 /* ================================================ */
 /* ================================================ */
 AlgoWFDm_Increment::AlgoWFDm_Increment(const std::string &algo_name, const Instance &instance,
-                       const COMBINATION combination, const WEIGHT weight,
+                       const MEASURE measure, const WEIGHT weight,
                        const bool dynamic_weights,
                        const int bin_increment_percent):
-    AlgoWFDm(algo_name, instance, combination, weight, dynamic_weights),
+    AlgoWFDm(algo_name, instance, measure, weight, dynamic_weights),
     bin_increment_percent(bin_increment_percent)
 { }
 
@@ -548,9 +548,9 @@ int AlgoWFDm_Increment::solveInstanceMultiBin(int LB, int UB)
 /* ================================================ */
 /* ================================================ */
 AlgoWFDm_BinSearch::AlgoWFDm_BinSearch(const std::string &algo_name, const Instance &instance,
-                       const COMBINATION combination, const WEIGHT weight,
+                       const MEASURE measure, const WEIGHT weight,
                        const bool dynamic_weights):
-    AlgoWFDm(algo_name, instance, combination, weight, dynamic_weights)
+    AlgoWFDm(algo_name, instance, measure, weight, dynamic_weights)
 { }
 
 
@@ -610,11 +610,11 @@ int AlgoWFDm_BinSearch::solveInstanceMultiBin(int LB, int UB)
 
 
 AlgoBFDm_Increment::AlgoBFDm_Increment(const std::string &algo_name, const Instance &instance,
-                       const COMBINATION combination, const WEIGHT weight,
+                       const MEASURE measure, const WEIGHT weight,
                        const bool dynamic_weights,
                        const int bin_increment_percent):
     AlgoWFDm_Increment(algo_name, instance,
-                       combination, weight,
+                       measure, weight,
                        dynamic_weights,
                        bin_increment_percent)
 { }
@@ -645,10 +645,10 @@ void AlgoBFDm_Increment::sortBins(BinList::iterator first_bin, BinList::iterator
 
 
 AlgoBFDm_BinSearch::AlgoBFDm_BinSearch(const std::string &algo_name, const Instance &instance,
-                       const COMBINATION combination, const WEIGHT weight,
+                       const MEASURE measure, const WEIGHT weight,
                        const bool dynamic_weights):
     AlgoWFDm_BinSearch(algo_name, instance,
-                       combination, weight,
+                       measure, weight,
                        dynamic_weights)
 { }
 

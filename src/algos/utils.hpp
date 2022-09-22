@@ -8,11 +8,11 @@
 #include "lower_bounds.hpp"
 
 #include <string>
-#include <map>
 
 using namespace vectorpack;
 
 std::vector<std::string> splitString(const std::string& str);
+bool isRatioWeight(const std::string& str);
 
 // Creator of BaseAlgo variant w.r.t. given algo_name
 // Only for ItemCentric and BinCentric algorithms

@@ -48,7 +48,7 @@ class AlgoFFD : public AlgoFit
 {
 public:
     AlgoFFD(const std::string& algo_name, const Instance &instance,
-            const COMBINATION combination, const WEIGHT weight,
+            const MEASURE measure, const WEIGHT weight,
             bool dynamic_weights);
 
 protected:
@@ -57,7 +57,7 @@ protected:
     virtual void addItemToBin(Item* item, Bin* bin);
     virtual Bin* createNewBin(); // Open a new empty bin
 
-    const COMBINATION size_combination;
+    const MEASURE size_measure;
     const WEIGHT weight;
     FloatList weights_list; // The list of computed weights
     FloatList total_norm_size; // The list of total normalized size of items
@@ -72,7 +72,7 @@ class AlgoBFD_T1 : public AlgoFFD
 {
 public:
     AlgoBFD_T1(const std::string& algo_name, const Instance &instance,
-               const COMBINATION combination, const WEIGHT weight,
+               const MEASURE measure, const WEIGHT weight,
                bool dynamic_weights);
 
 protected:
@@ -90,7 +90,7 @@ class AlgoBFD_T2 : public AlgoFFD
 {
 public:
     AlgoBFD_T2(const std::string& algo_name, const Instance &instance,
-               const COMBINATION combination, const WEIGHT weight,
+               const MEASURE measure, const WEIGHT weight,
                bool dynamic_item_weights);
 
 protected:
@@ -110,7 +110,7 @@ class AlgoBFD_T3 : public AlgoBFD_T2
 {
 public:
     AlgoBFD_T3(const std::string& algo_name, const Instance &instance,
-               const COMBINATION combination, const WEIGHT item_weight,
+               const MEASURE measure, const WEIGHT item_weight,
                const WEIGHT bin_weight, bool dynamic_item_weights);
 };
 
@@ -121,7 +121,7 @@ class AlgoBF : public AlgoBFD_T2
 {
 public:
     AlgoBF(const std::string& algo_name, const Instance &instance,
-           const COMBINATION combination, const WEIGHT weight);
+           const MEASURE measure, const WEIGHT weight);
 };
 
 
@@ -132,7 +132,7 @@ class AlgoWFD_T1 : public AlgoBFD_T1
 {
 public:
     AlgoWFD_T1(const std::string& algo_name, const Instance &instance,
-               const COMBINATION combination, const WEIGHT weight,
+               const MEASURE measure, const WEIGHT weight,
                bool dynamic_weights);
 
 protected:
@@ -143,11 +143,19 @@ class AlgoWFD_T2 : public AlgoBFD_T2
 {
 public:
     AlgoWFD_T2(const std::string& algo_name, const Instance &instance,
-               const COMBINATION combination, const WEIGHT weight,
+               const MEASURE measure, const WEIGHT weight,
                bool dynamic_item_weights);
 
 protected:
     virtual void sortBins();
+};
+
+class AlgoWFD_T3 : public AlgoWFD_T2
+{
+public:
+    AlgoWFD_T3(const std::string& algo_name, const Instance &instance,
+               const MEASURE measure, const WEIGHT item_weight,
+               const WEIGHT bin_weight, bool dynamic_item_weights);
 };
 
 
@@ -158,7 +166,7 @@ class AlgoWF : public AlgoWFD_T2
 {
 public:
     AlgoWF(const std::string& algo_name, const Instance &instance,
-           const COMBINATION combination, const WEIGHT weight);
+           const MEASURE measure, const WEIGHT weight);
 };
 
 

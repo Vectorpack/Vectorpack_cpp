@@ -128,17 +128,17 @@ AlgoFF::AlgoFF(const std::string& algo_name, const Instance &instance):
 /* ================================================ */
 /* ================================================ */
 AlgoFFD::AlgoFFD(const std::string& algo_name, const Instance &instance,
-                 const COMBINATION combination, const WEIGHT weight,
+                 const MEASURE measure, const WEIGHT weight,
                  bool dynamic_weights):
     AlgoFit(algo_name, instance),
-    size_combination(combination),
+    size_measure(measure),
     weights_list(instance.getDimensions(), 1.0),
     weight(weight)
 {
     is_FFD_type = true;
     is_FFD_dynamic = dynamic_weights;
 
-    if ((weight == WEIGHT::RESIDUAL_RATIO) or (weight == WEIGHT::UTILISATION_RATIO))
+    if (weight == WEIGHT::UTILIZATION_RATIO)
     {
         is_ratio_weight = true;
         is_FFD_dynamic = true;
@@ -162,14 +162,9 @@ void AlgoFFD::addItemToBin(Item* item, Bin* bin)
 
     if (is_FFD_dynamic)
     {
-        // Update the total normalized size for dynamic weights
-        if (weight != WEIGHT::RESIDUAL_RATIO)
+        for (int h = 0; h < dimensions; ++h)
         {
-            // Residual ratio weights do not depend on total_norm_size
-            for (int h = 0; h < dimensions; ++h)
-            {
-                total_norm_size[h] -= item->getNormSizeDim(h);
-            }
+            total_norm_size[h] -= item->getNormSizeDim(h);
         }
 
         if (is_ratio_weight)
@@ -222,21 +217,9 @@ void AlgoFFD::computeItemMeasures(ItemList::iterator first_item, ItemList::itera
         utilComputeWeights(weight, dimensions, (end_it - first_item), weights_list, total_norm_size);
     }
 
-    switch(size_combination)
+    switch(size_measure)
     {
-    case COMBINATION::SUM:
-        for(auto item_it = first_item; item_it != end_it; ++item_it)
-        {
-            Item * item = *item_it;
-            float item_size = 0.0;
-            for (int h = 0; h < dimensions; ++h)
-            {
-                item_size += weights_list[h] * item->getNormSizeDim(h);
-            }
-            item->setMeasure(item_size);
-        }
-        break;
-    case COMBINATION::MAX:
+    case MEASURE::LINF:
         for(auto item_it = first_item; item_it != end_it; ++item_it)
         {
             Item * item = *item_it;
@@ -248,9 +231,21 @@ void AlgoFFD::computeItemMeasures(ItemList::iterator first_item, ItemList::itera
             item->setMeasure(max_size);
         }
         break;
-    case COMBINATION::SUM_SQ:
-    case COMBINATION::SUM_SQ_LOAD:
-        // For these 2 combinations, the item measure is computed the same
+    case MEASURE::L1:
+        for(auto item_it = first_item; item_it != end_it; ++item_it)
+        {
+            Item * item = *item_it;
+            float item_size = 0.0;
+            for (int h = 0; h < dimensions; ++h)
+            {
+                item_size += weights_list[h] * item->getNormSizeDim(h);
+            }
+            item->setMeasure(item_size);
+        }
+        break;
+    case MEASURE::L2:
+    case MEASURE::L2_LOAD:
+        // For these 2 measures, the item measure is computed the same
         for (auto item_it = first_item; item_it != end_it; ++item_it)
         {
             Item* item = *item_it;
@@ -259,7 +254,8 @@ void AlgoFFD::computeItemMeasures(ItemList::iterator first_item, ItemList::itera
             {
                 value += weights_list[h] * item->getNormSizeDim(h) * item->getNormSizeDim(h);
             }
-            item->setMeasure(std::sqrt(value));
+            //item->setMeasure(std::sqrt(value));
+            item->setMeasure(value); // No need to compute the sqrt for ordering items
         }
         break;
     }
@@ -271,9 +267,9 @@ void AlgoFFD::computeItemMeasures(ItemList::iterator first_item, ItemList::itera
 /* ================================================ */
 /* ================================================ */
 AlgoBFD_T1::AlgoBFD_T1(const std::string& algo_name, const Instance &instance,
-                 const COMBINATION combination, const WEIGHT weight,
+                 const MEASURE measure, const WEIGHT weight,
                        bool dynamic_weights):
-    AlgoFFD(algo_name, instance, combination, weight, dynamic_weights)
+    AlgoFFD(algo_name, instance, measure, weight, dynamic_weights)
 {
     is_BF_type = true;
 }
@@ -324,17 +320,9 @@ void AlgoBFD_T1::addItemToBin(Item *item, Bin *bin)
 void AlgoBFD_T1::updateBinMeasure(Bin *bin)
 {
     float val_residual = 0.0;
-    switch(size_combination)
+    switch(size_measure)
     {
-    case COMBINATION::SUM:
-        for (int h = 0; h < dimensions; ++h)
-        {
-            // We need the normalized residual bin capacity
-            val_residual += weights_list[h] * ((float)bin->getAvailableCapDim(h)) / bin_max_capacities[h];
-        }
-        bin->setMeasure(val_residual);
-        break;
-    case COMBINATION::MAX:
+    case MEASURE::LINF:
         for (int h = 0; h < dimensions; ++h)
         {
             // We need the normalized residual bin capacity
@@ -342,23 +330,33 @@ void AlgoBFD_T1::updateBinMeasure(Bin *bin)
         }
         bin->setMeasure(val_residual);
         break;
-    case COMBINATION::SUM_SQ:
+    case MEASURE::L1:
+        for (int h = 0; h < dimensions; ++h)
+        {
+            // We need the normalized residual bin capacity
+            val_residual += weights_list[h] * ((float)bin->getAvailableCapDim(h)) / bin_max_capacities[h];
+        }
+        bin->setMeasure(val_residual);
+        break;
+    case MEASURE::L2:
         for (int h = 0; h < dimensions; ++h)
         {
             // Need normalized values
             float f = ((float)bin->getAvailableCapDim(h)) / bin_max_capacities[h];
             val_residual += weights_list[h] * f*f;
         }
-        bin->setMeasure(std::sqrt(val_residual));
+        //bin->setMeasure(std::sqrt(val_residual));
+        bin->setMeasure(val_residual);
         break;
-    case COMBINATION::SUM_SQ_LOAD:
+    case MEASURE::L2_LOAD:
         for (int h = 0; h < dimensions; ++h)
         {
             // Normalized value of used capacity (normalized load of the bin)
             float f = ((float)(bin_max_capacities[h] - bin->getAvailableCapDim(h))) / bin_max_capacities[h];
             val_residual += weights_list[h] * f*f;
         }
-        bin->setMeasure(std::sqrt(val_residual));
+        //bin->setMeasure(std::sqrt(val_residual));
+        bin->setMeasure(val_residual);
         break;
     }
 }
@@ -369,9 +367,9 @@ void AlgoBFD_T1::updateBinMeasure(Bin *bin)
 /* ================================================ */
 /* ================================================ */
 AlgoBFD_T2::AlgoBFD_T2(const std::string& algo_name, const Instance &instance,
-                       const COMBINATION combination, const WEIGHT weight,
+                       const MEASURE measure, const WEIGHT weight,
                        bool dynamic_item_weights):
-    AlgoFFD(algo_name, instance, combination, weight, dynamic_item_weights)
+    AlgoFFD(algo_name, instance, measure, weight, dynamic_item_weights)
 {
     is_BF_type = true;
     this->bin_weight = weight;
@@ -431,21 +429,9 @@ void AlgoBFD_T2::updateBinMeasures()
         utilComputeWeights(bin_weight, dimensions, bins.size(), bin_weights_list, total_norm_residual_capacity);
     }
 
-    switch(size_combination)
+    switch(size_measure)
     {
-    case COMBINATION::SUM:
-        for (Bin* b : bins)
-        {
-            float bin_residual = 0.0;
-            for (int h = 0; h < dimensions; ++h)
-            {
-                // We need the normalized residual bin capacity
-                bin_residual += bin_weights_list[h] * ((float)b->getAvailableCapDim(h)) / bin_max_capacities[h];
-            }
-            b->setMeasure(bin_residual);
-        }
-        break;
-    case COMBINATION::MAX:
+    case MEASURE::LINF:
         for (Bin* b : bins)
         {
             float max_residual = 0.0;
@@ -457,7 +443,19 @@ void AlgoBFD_T2::updateBinMeasures()
             b->setMeasure(max_residual);
         }
         break;
-    case COMBINATION::SUM_SQ:
+    case MEASURE::L1:
+        for (Bin* b : bins)
+        {
+            float bin_residual = 0.0;
+            for (int h = 0; h < dimensions; ++h)
+            {
+                // We need the normalized residual bin capacity
+                bin_residual += bin_weights_list[h] * ((float)b->getAvailableCapDim(h)) / bin_max_capacities[h];
+            }
+            b->setMeasure(bin_residual);
+        }
+        break;
+    case MEASURE::L2:
         for (Bin* b : bins)
         {
             float value = 0.0;
@@ -467,10 +465,11 @@ void AlgoBFD_T2::updateBinMeasures()
                 float f = ((float)b->getAvailableCapDim(h)) / bin_max_capacities[h];
                 value += bin_weights_list[h] * f*f;
             }
-            b->setMeasure(std::sqrt(value));
+            //b->setMeasure(std::sqrt(value));
+            b->setMeasure(value);
         }
         break;
-    case COMBINATION::SUM_SQ_LOAD:
+    case MEASURE::L2_LOAD:
         for (Bin* b : bins)
         {
             float value = 0.0;
@@ -480,7 +479,8 @@ void AlgoBFD_T2::updateBinMeasures()
                 float f = ((float)(bin_max_capacities[h] - b->getAvailableCapDim(h))) / bin_max_capacities[h];
                 value += bin_weights_list[h] * f*f;
             }
-            b->setMeasure(std::sqrt(value));
+            //b->setMeasure(std::sqrt(value));
+            b->setMeasure(value);
         }
         break;
     }
@@ -492,9 +492,9 @@ void AlgoBFD_T2::updateBinMeasures()
 /* ================================================ */
 /* ================================================ */
 AlgoBFD_T3::AlgoBFD_T3(const std::string& algo_name, const Instance &instance,
-                       const COMBINATION combination, const WEIGHT item_weight,
+                       const MEASURE measure, const WEIGHT item_weight,
                        const WEIGHT bin_weight, bool dynamic_item_weights):
-    AlgoBFD_T2(algo_name, instance, combination, item_weight, dynamic_item_weights)
+    AlgoBFD_T2(algo_name, instance, measure, item_weight, dynamic_item_weights)
 { 
     this->bin_weight = bin_weight;
 }
@@ -504,8 +504,8 @@ AlgoBFD_T3::AlgoBFD_T3(const std::string& algo_name, const Instance &instance,
 /* ================================================ */
 /* ================================================ */
 AlgoBF::AlgoBF(const std::string& algo_name, const Instance &instance,
-               const COMBINATION combination, const WEIGHT weight):
-    AlgoBFD_T2(algo_name, instance, combination, weight, false)
+               const MEASURE measure, const WEIGHT weight):
+    AlgoBFD_T2(algo_name, instance, measure, weight, false)
 {
     is_FFD_type = false;
 }
@@ -515,9 +515,9 @@ AlgoBF::AlgoBF(const std::string& algo_name, const Instance &instance,
 /* ================================================ */
 /* ================================================ */
 AlgoWFD_T1::AlgoWFD_T1(const std::string& algo_name, const Instance &instance,
-                       const COMBINATION combination, const WEIGHT weight,
+                       const MEASURE measure, const WEIGHT weight,
                        bool dynamic_weights):
-    AlgoBFD_T1(algo_name, instance, combination, weight, dynamic_weights)
+    AlgoBFD_T1(algo_name, instance, measure, weight, dynamic_weights)
 {
     create_bins_at_end = false; // Necessary when bins are bubbled down
 }
@@ -549,9 +549,9 @@ void AlgoWFD_T1::sortBins()
 /* ================================================ */
 /* ================================================ */
 AlgoWFD_T2::AlgoWFD_T2(const std::string& algo_name, const Instance &instance,
-                       const COMBINATION combination, const WEIGHT weight,
+                       const MEASURE measure, const WEIGHT weight,
                        bool dynamic_weights):
-    AlgoBFD_T2(algo_name, instance, combination, weight, dynamic_weights)
+    AlgoBFD_T2(algo_name, instance, measure, weight, dynamic_weights)
 {
     create_bins_at_end = false; // Necessary when bins are bubbled down
 }
@@ -563,12 +563,25 @@ void AlgoWFD_T2::sortBins()
 }
 
 
+
+/* ================================================ */
+/* ================================================ */
+/* ================================================ */
+AlgoWFD_T3::AlgoWFD_T3(const std::string& algo_name, const Instance &instance,
+                       const MEASURE measure, const WEIGHT item_weight,
+                       const WEIGHT bin_weight, bool dynamic_item_weights):
+    AlgoWFD_T2(algo_name, instance, measure, item_weight, dynamic_item_weights)
+{
+    this->bin_weight = bin_weight;
+}
+
+
 /* ================================================ */
 /* ================================================ */
 /* ================================================ */
 AlgoWF::AlgoWF(const std::string& algo_name, const Instance &instance,
-               const COMBINATION combination, const WEIGHT weight):
-    AlgoWFD_T2(algo_name, instance, combination, weight, false)
+               const MEASURE measure, const WEIGHT weight):
+    AlgoWFD_T2(algo_name, instance, measure, weight, false)
 {
     is_FFD_type = false;
 }
