@@ -35,6 +35,12 @@ Instance::Instance(const std::string instance_name,
         getline(ifile, line);
         this->capacity_list = retrieveCapacityList(line);
 
+        if (this->capacity_list.size() != this->dimensions)
+        {
+            std::string err("Bin capacity list does not have the required dimension! Found " + to_string(this->capacity_list.size()) + " but given d=" + to_string(this->dimensions));
+            throw runtime_error(err);
+        }
+
         // Retrieve number of items
         getline(ifile, line);
         this->nb_items = stoi(line);
@@ -50,6 +56,12 @@ Instance::Instance(const std::string instance_name,
             FloatList norm_sizes;
             retrieveSizeLists(line, this->capacity_list, sizes, norm_sizes);
 
+            if (sizes.size() != this->dimensions)
+            {
+                std::string err("Size list of item " + to_string(internal_id) + " does not have the required dimension! Found " + to_string(sizes.size()) + " but given d=" + to_string(this->dimensions));
+                throw runtime_error(err);
+            }
+
             item_list.push_back(new Item(internal_id, sizes, norm_sizes));
         }
 
@@ -62,7 +74,7 @@ Instance::Instance(const std::string instance_name,
     }
     catch (exception& e)
     {
-        string s = "Problem while loading instance file " + filename + " (" + e.what() + ")";
+        string s = "Problem while loading instance file " + filename + ": " + e.what();
         throw runtime_error(s);
     }
 }
