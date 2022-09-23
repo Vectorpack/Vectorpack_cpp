@@ -21,7 +21,7 @@ const SizeList& Item::getSizes() const
 
 const int Item::getSizeDim(const int dim) const
 {
-    return sizes[dim];
+    return sizes.at(dim);
 }
 
 const FloatList& Item::getNormSizes() const
@@ -31,7 +31,7 @@ const FloatList& Item::getNormSizes() const
 
 const float Item::getNormSizeDim(const int dim) const
 {
-    return norm_sizes[dim];
+    return norm_sizes.at(dim);
 }
 
 std::string Item::toString(const bool full) const

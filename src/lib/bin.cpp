@@ -26,7 +26,7 @@ const SizeList& Bin::getMaxCaps() const
 
 const int Bin::getMaxCapDim(const int dim) const
 {
-    return max_capacities[dim];
+    return max_capacities.at(dim);
 }
 
 const SizeList& Bin::getAvailableCaps() const
@@ -36,7 +36,7 @@ const SizeList& Bin::getAvailableCaps() const
 
 const int Bin::getAvailableCapDim(const int dim) const
 {
-    return available_capacities[dim];
+    return available_capacities.at(dim);
 }
 
 
