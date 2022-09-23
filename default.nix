@@ -24,8 +24,8 @@ let
             enableParallelBuilding = true;
         };
 
-        vectorpack = vectorpack_lib.overrideAttrs (attr: rec {
-            cmakeFlags = ''-Dbuild_executable=ON -DCMAKE_INSTALL_PREFIX=$out'';
+        vectorpack = vectorpack_lib.overrideAttrs (attr: {
+            cmakeFlags = ''-Dbuild_executable=ON'';
         });
     };
 in

@@ -102,7 +102,7 @@ endif()
 ### or the basic library only
 if (build_executable)
     # Install only the executable
-    install(TARGETS ${exec_name} DESTINATION bin)
+    install(TARGETS ${exec_name} RUNTIME DESTINATION bin)
 else()
     # Else, install the Vectorpack library
     install(TARGETS ${lib_name}
