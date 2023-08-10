@@ -7,6 +7,13 @@ set(lib_name "Vectorpack")
 # set the library extension and make the executable/library usable in Windows
 #########################
 
+# Set default install path in build directory if not specified by the user
+if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install CACHE PATH "install prefix" FORCE)
+    message("Setting default install path to ${CMAKE_INSTALL_PREFIX}. Add cmake option `-DCMAKE_INSTALL_PREFIX=/your/install/path` to manually set it")
+endif()
+message("Install prefix: ${CMAKE_INSTALL_PREFIX}")
+
 
 # Enable C++17
 set(CMAKE_CXX_STANDARD 17)
@@ -18,7 +25,7 @@ option(build_executable "Build the vectorpack executable" OFF)
 
 # Algorithms are required in the executable
 if (build_executable AND NOT include_algorithms)
-    message("Setting 'include_algorithms' to ON to build the executable")
+    message("Forcing 'include_algorithms' to ON to build the executable")
     set(include_algorithms ON)
 endif()
 
@@ -99,7 +106,7 @@ endif()
 
 # Install rule
 ### Depending whether only executable should be installed
-### or the basic library only
+### or the Vectorpack library only
 if (build_executable)
     # Install only the executable
     install(TARGETS ${exec_name} RUNTIME DESTINATION bin)

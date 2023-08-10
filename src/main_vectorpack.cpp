@@ -115,23 +115,23 @@ int main(int argc, char** argv)
         int LB = LB_BPP(inst);
         string type_algo = algo_name.substr(0, 4);
 
-        bool is_multidim = false;
+        bool is_multibin = false; // Whether it is a multi-bin type algorithm
         if (type_algo == "BIM-")
         {
             algo = createAlgoPairing(algo_name, inst);
-            is_multidim = true;
+            is_multibin = true;
         }
         else if ( (type_algo == "WFDm") || (type_algo == "BFDm"))
         {
             algo = createAlgoWFDm(algo_name, inst);
-            is_multidim = true;
+            is_multibin = true;
         }
         else
         {
             algo = createAlgoCentric(algo_name, inst);
         }
 
-        if (is_multidim)
+        if (is_multibin)
         {
             BaseAlgo * algoFF = createAlgoCentric("FF", inst);
             int UB = algoFF->solveInstance(LB);
@@ -194,7 +194,8 @@ int main(int argc, char** argv)
         f.close();
     }
 
-    if (!only_LB)
+    //if (!only_LB)
+    if (algo != nullptr)
     {
         delete algo;
     }
