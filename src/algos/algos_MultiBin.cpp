@@ -14,7 +14,7 @@ AlgoPairing::AlgoPairing(const std::string &algo_name, const Instance &instance,
                          const bool use_bin_weights):
     AlgoBinCentric(algo_name, instance, score, weight, dynamic_weights, use_bin_weights)
 {
-    if ((score == SCORE::NORM_DOT_PRODUCT) or is_ratio_weight or this->use_bin_weights)
+    if ((score == SCORE::NORM_DOT_PRODUCT) || is_ratio_weight || this->use_bin_weights)
     {
         // Scores need to be re-computed every time
         store_scores = false;
@@ -65,7 +65,7 @@ void AlgoPairing::resetAlgo()
         }
     }
 
-    if ((score == SCORE::NORM_DOT_PRODUCT) or is_ratio_weight or use_bin_weights)
+    if ((score == SCORE::NORM_DOT_PRODUCT) || is_ratio_weight || use_bin_weights)
     {
         total_norm_residual_capacity.clear();
         total_norm_residual_capacity = FloatList(dimensions, 0.0);
@@ -223,7 +223,7 @@ int AlgoPairing_Increment::solveInstanceMultiBin(int LB, int UB)
     int bin_increment = 1; // Default
     if (bin_increment_percent > 0)
     {
-        bin_increment = std::floor( (UB - LB) * bin_increment_percent / 100.0);
+        bin_increment = (int)std::floor( (UB - LB) * bin_increment_percent / 100.0);
 
         if (bin_increment < 1)
         {
@@ -234,7 +234,7 @@ int AlgoPairing_Increment::solveInstanceMultiBin(int LB, int UB)
     int target_bins = LB;
     bool sol_found = trySolve(target_bins);
     bool last_try = false;
-    while (!sol_found and !last_try)
+    while (!sol_found && !last_try)
     {
         // There are remaining items to pack
         // But no bin can accommodate an item anymore
@@ -425,7 +425,7 @@ bool AlgoWFDm::packItems(BinList::iterator start_bin_it)
 
         auto curr_bin_it = start_bin_it;
         allocated = false;
-        while ((!allocated) and (curr_bin_it != bins.end()))
+        while ((!allocated) && (curr_bin_it != bins.end()))
         {
             if (checkItemToBin(item, *curr_bin_it))
             {
@@ -519,7 +519,7 @@ int AlgoWFDm_Increment::solveInstanceMultiBin(int LB, int UB)
     int target_bins = LB;
     bool sol_found = trySolve(target_bins);
     bool last_try = false;
-    while (!sol_found and !last_try)
+    while (!sol_found && !last_try)
     {
         // There are remaining items to pack
         // But no bin can accommodate an item anymore

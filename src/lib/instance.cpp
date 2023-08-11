@@ -143,12 +143,12 @@ void vectorpack::retrieveSizeLists(std::string resource_str, SizeList& capacity_
     std::string str_val;
     std::istringstream splitStream(resource_str);
 
-    int d = capacity_list.size();
+    int d = (int)capacity_list.size();
     sizes.reserve(d);
     norm_sizes.reserve(d);
 
     int i = 0;
-    while(std::getline(splitStream, str_val, ' ') and (i < d))
+    while(std::getline(splitStream, str_val, ' ') && (i < d))
     {
         val = std::stoi(str_val);
         sizes.push_back(val);

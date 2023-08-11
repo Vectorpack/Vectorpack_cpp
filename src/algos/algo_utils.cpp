@@ -19,7 +19,7 @@ std::vector<std::string> splitString(const std::string & str)
 bool isRatioWeight(const std::string& str)
 {
     size_t s = str.size();
-    if ((s > 5) and (str.find("Ratio", s-5) != std::string::npos))
+    if ((s > 5) && (str.find("Ratio", s-5) != std::string::npos))
     {
         return true;
     }
@@ -33,11 +33,11 @@ BaseAlgo* createAlgoCentric(const std::string &algo_name, const Instance &instan
 
     try {
         // Item-centric algos
-        if ((s == "FF") and (v.size() == 1))
+        if ((s == "FF") && (v.size() == 1))
         {
             return new AlgoFF(algo_name, instance);
         }
-        else if ((v.size() == 2) and (v[1] == "Lexico")) // Lexicographic order
+        else if ((v.size() == 2) && (v[1] == "Lexico")) // Lexicographic order
         {
             if(s == "FFD")
             {
@@ -52,7 +52,7 @@ BaseAlgo* createAlgoCentric(const std::string &algo_name, const Instance &instan
                 return new AlgoWFD_Lexico(algo_name, instance);
             }
         }
-        else if ((v.size() == 2) and (v[1] == "Rank")) // Aggregated Rank order
+        else if ((v.size() == 2) && (v[1] == "Rank")) // Aggregated Rank order
         {
             if(s == "FFD")
             {
@@ -67,7 +67,7 @@ BaseAlgo* createAlgoCentric(const std::string &algo_name, const Instance &instan
                 return new AlgoWFD_Rank(algo_name, instance, false);
             }
         }
-        else if ((v.size() == 3) and (v[1] == "Rank") and (v[2] == "Dyn")) // Aggregated Rank order
+        else if ((v.size() == 3) && (v[1] == "Rank") && (v[2] == "Dyn")) // Aggregated Rank order
         {
             if(s == "FFD")
             {
@@ -92,7 +92,7 @@ BaseAlgo* createAlgoCentric(const std::string &algo_name, const Instance &instan
                                    map_str_to_weight.at(v[2]),
                                    isRatioWeight(v[2]));
             }
-            else if ((v.size() == 4) and (v[3] == "Dyn"))
+            else if ((v.size() == 4) && (v[3] == "Dyn"))
             {
                 // FFD with dynamic weights
                 return new AlgoFFD(algo_name, instance,
@@ -113,7 +113,7 @@ BaseAlgo* createAlgoCentric(const std::string &algo_name, const Instance &instan
                                           map_str_to_weight.at(v[3]),
                                           isRatioWeight(v[3]));
                 }
-                else if ((v.size() == 5) and (v[4] == "Dyn"))
+                else if ((v.size() == 5) && (v[4] == "Dyn"))
                 {
                     // BFD Type 1 with dynamic item weights
                     return new AlgoBFD_T1(algo_name, instance,
@@ -131,7 +131,7 @@ BaseAlgo* createAlgoCentric(const std::string &algo_name, const Instance &instan
                                           map_str_to_weight.at(v[3]),
                                           false);
                 }
-                else if ((v.size() == 5) and (v[4] == "Dyn"))
+                else if ((v.size() == 5) && (v[4] == "Dyn"))
                 {
                     return new AlgoBFD_T2(algo_name, instance,
                                           map_str_to_measure.at(v[2]),
@@ -149,7 +149,7 @@ BaseAlgo* createAlgoCentric(const std::string &algo_name, const Instance &instan
                                           map_str_to_weight.at(v[4]),
                                           false);
                 }
-                else if ((v.size() == 6) and (v[5] == "Dyn"))
+                else if ((v.size() == 6) && (v[5] == "Dyn"))
                 {
                     return new AlgoBFD_T3(algo_name, instance,
                                           map_str_to_measure.at(v[2]),
@@ -179,7 +179,7 @@ BaseAlgo* createAlgoCentric(const std::string &algo_name, const Instance &instan
                                           map_str_to_weight.at(v[3]),
                                           isRatioWeight(v[3]));
                 }
-                else if ((v.size() == 5) and (v[4] == "Dyn"))
+                else if ((v.size() == 5) && (v[4] == "Dyn"))
                 {
                     return new AlgoWFD_T1(algo_name, instance,
                                           map_str_to_measure.at(v[2]),
@@ -196,7 +196,7 @@ BaseAlgo* createAlgoCentric(const std::string &algo_name, const Instance &instan
                                           map_str_to_weight.at(v[3]),
                                           false);
                 }
-                else if ((v.size() == 5) and (v[4] == "Dyn"))
+                else if ((v.size() == 5) && (v[4] == "Dyn"))
                 {
                     return new AlgoWFD_T2(algo_name, instance,
                                           map_str_to_measure.at(v[2]),
@@ -214,7 +214,7 @@ BaseAlgo* createAlgoCentric(const std::string &algo_name, const Instance &instan
                                           map_str_to_weight.at(v[4]),
                                           false);
                 }
-                else if ((v.size() == 6) and (v[5] == "Dyn"))
+                else if ((v.size() == 6) && (v[5] == "Dyn"))
                 {
                     return new AlgoWFD_T3(algo_name, instance,
                                           map_str_to_measure.at(v[2]),
@@ -244,7 +244,7 @@ BaseAlgo* createAlgoCentric(const std::string &algo_name, const Instance &instan
                                           isRatioWeight(v[2]),
                                           false);
             }
-            else if ((v.size() == 4) and (v[3] == "Dyn"))
+            else if ((v.size() == 4) && (v[3] == "Dyn"))
             {
                 // with dynamic weights
                 return new AlgoBinCentric(algo_name, instance,
@@ -253,7 +253,7 @@ BaseAlgo* createAlgoCentric(const std::string &algo_name, const Instance &instan
                                           true,
                                           false);
             }
-            else if ((v.size() == 4) and (v[3] == "Bin"))
+            else if ((v.size() == 4) && (v[3] == "Bin"))
             {
                 return new AlgoBinCentric(algo_name, instance,
                                           map_str_to_score.at(v[1]),
@@ -292,14 +292,14 @@ AlgoPairing* createAlgoPairing(const std::string& algo_name, const Instance &ins
                                             map_str_to_weight.at(v[3]),
                                             isRatioWeight(v[3]), false);
                 }
-                else if ((v.size() == 5) and (v[4] == "Dyn"))
+                else if ((v.size() == 5) && (v[4] == "Dyn"))
                 {
                     return new AlgoPairing_BinSearch(algo_name, instance,
                                             map_str_to_score.at(v[2]),
                                             map_str_to_weight.at(v[3]),
                                             true, false);
                 }
-                else if ((v.size() == 5) and (v[4] == "Bin"))
+                else if ((v.size() == 5) && (v[4] == "Bin"))
                 {
                     return new AlgoPairing_BinSearch(algo_name, instance,
                                             map_str_to_score.at(v[2]),
@@ -318,7 +318,7 @@ AlgoPairing* createAlgoPairing(const std::string& algo_name, const Instance &ins
                                             isRatioWeight(v[3]), false,
                                             std::stoi(v[4]));
                 }
-                else if ((v.size() == 6) and (v[4] == "Dyn"))
+                else if ((v.size() == 6) && (v[4] == "Dyn"))
                 {
                     return new AlgoPairing_Increment(algo_name, instance,
                                             map_str_to_score.at(v[2]),
@@ -326,7 +326,7 @@ AlgoPairing* createAlgoPairing(const std::string& algo_name, const Instance &ins
                                             true, false,
                                             std::stoi(v[5]));
                 }
-                else if ((v.size() == 6) and (v[4] == "Bin"))
+                else if ((v.size() == 6) && (v[4] == "Bin"))
                 {
                     return new AlgoPairing_Increment(algo_name, instance,
                                             map_str_to_score.at(v[2]),
@@ -366,7 +366,7 @@ AlgoWFDm* createAlgoWFDm(const std::string& algo_name, const Instance &instance)
                                             map_str_to_weight.at(v[3]),
                                             isRatioWeight(v[3]));
                 }
-                else if ((v.size() == 5) and (v[4] == "Dyn"))
+                else if ((v.size() == 5) && (v[4] == "Dyn"))
                 {
                     return new AlgoWFDm_BinSearch(algo_name, instance,
                                             map_str_to_measure.at(v[2]),
@@ -385,7 +385,7 @@ AlgoWFDm* createAlgoWFDm(const std::string& algo_name, const Instance &instance)
                                             isRatioWeight(v[3]),
                                             std::stoi(v[4]));
                 }
-                else if ((v.size() == 6) and (v[4] == "Dyn"))
+                else if ((v.size() == 6) && (v[4] == "Dyn"))
                 {
                     return new AlgoWFDm_Increment(algo_name, instance,
                                             map_str_to_measure.at(v[2]),
@@ -407,7 +407,7 @@ AlgoWFDm* createAlgoWFDm(const std::string& algo_name, const Instance &instance)
                                             map_str_to_weight.at(v[3]),
                                             isRatioWeight(v[3]));
                 }
-                else if ((v.size() == 5) and (v[4] == "Dyn"))
+                else if ((v.size() == 5) && (v[4] == "Dyn"))
                 {
                     return new AlgoBFDm_BinSearch(algo_name, instance,
                                             map_str_to_measure.at(v[2]),
@@ -426,7 +426,7 @@ AlgoWFDm* createAlgoWFDm(const std::string& algo_name, const Instance &instance)
                                             isRatioWeight(v[3]),
                                             std::stoi(v[4]));
                 }
-                else if ((v.size() == 6) and (v[4] == "Dyn"))
+                else if ((v.size() == 6) && (v[4] == "Dyn"))
                 {
                     return new AlgoBFDm_Increment(algo_name, instance,
                                             map_str_to_measure.at(v[2]),

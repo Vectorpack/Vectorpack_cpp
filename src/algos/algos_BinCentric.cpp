@@ -32,13 +32,13 @@ AlgoBinCentric::AlgoBinCentric(const std::string &algo_name, const Instance &ins
         is_ratio_weight = true;
     }
 
-    if (is_ratio_weight or use_bin_weights)
+    if (is_ratio_weight || use_bin_weights)
     {
         // So that weights are re-computed after each packing of an item
         this->dynamic_weights = true;
     }
 
-    if ((score == SCORE::NORM_DOT_PRODUCT) or this->dynamic_weights)
+    if ((score == SCORE::NORM_DOT_PRODUCT) || this->dynamic_weights)
     {
         // Will contain normalized values
         total_norm_residual_capacity = FloatList(dimensions, 0.0);
@@ -59,14 +59,14 @@ Bin* AlgoBinCentric::createNewBin()
 {
     Bin* bin = BaseAlgo::createNewBin();
 
-    if ((score == SCORE::NORM_DOT_PRODUCT) or dynamic_weights)
+    if ((score == SCORE::NORM_DOT_PRODUCT) || dynamic_weights)
     {
         for (int h = 0; h < dimensions; ++h)
         {
             total_norm_residual_capacity[h] += 1.0; // The normalized residual capacity of an empty bin is 1
         }
     }
-    if ((score == SCORE::DOT_PRODUCT2) or (score == SCORE::DOT_PRODUCT3))
+    if ((score == SCORE::DOT_PRODUCT2) || (score == SCORE::DOT_PRODUCT3))
     {
         // Set the norm2 of residual capacity of the bin
         bin->setMeasure(utilComputeNorm2(bin->getAvailableCaps(), bin->getMaxCaps()));
@@ -79,14 +79,14 @@ void AlgoBinCentric::addItemToBin(Item *item, Bin *bin)
 {
     BaseAlgo::addItemToBin(item, bin);
 
-    if ((score == SCORE::NORM_DOT_PRODUCT) or dynamic_weights)
+    if ((score == SCORE::NORM_DOT_PRODUCT) || dynamic_weights)
     {
         for (int h = 0; h < dimensions; ++h)
         {
             total_norm_residual_capacity[h] -= item->getNormSizeDim(h);
         }
     }
-    if ((score == SCORE::DOT_PRODUCT2) or (score == SCORE::DOT_PRODUCT3))
+    if ((score == SCORE::DOT_PRODUCT2) || (score == SCORE::DOT_PRODUCT3))
     {
         // Update norm2 of the bin
         bin->setMeasure(utilComputeNorm2(bin->getAvailableCaps(), bin->getMaxCaps()));
@@ -138,7 +138,7 @@ float AlgoBinCentric::computeItemBinScore(Item* item, Bin* bin)
     case SCORE::NORM_DOT_PRODUCT:
         for (int h = 0; h < dimensions; ++h)
         {
-            if ((total_norm_size[h] > ZERO_THRESHOLD) and (total_norm_residual_capacity[h] > ZERO_THRESHOLD))
+            if ((total_norm_size[h] > ZERO_THRESHOLD) && (total_norm_residual_capacity[h] > ZERO_THRESHOLD))
             {
                 score_value += weights_list[h] * (item->getNormSizeDim(h) * bin->getAvailableCapDim(h))/ (float)(total_norm_size[h] * bin_max_capacities[h] * total_norm_residual_capacity[h]);
             }

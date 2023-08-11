@@ -55,7 +55,7 @@ int AlgoFit::solveInstance(int hint_nb_bins)
 
         auto curr_bin_it = bins.begin();
         allocated = false;
-        while ((!allocated) and (curr_bin_it != bins.end()))
+        while ((!allocated) && (curr_bin_it != bins.end()))
         {
             if (checkItemToBin(item, *curr_bin_it))
             {
