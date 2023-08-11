@@ -1,6 +1,7 @@
 #ifndef VECTORPACK_ITEM_HPP
 #define VECTORPACK_ITEM_HPP
 
+#include <algorithm>
 #include <vector>
 #include <string>
 

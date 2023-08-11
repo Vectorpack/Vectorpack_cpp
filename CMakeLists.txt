@@ -62,7 +62,7 @@ if (include_algorithms)
         src/algos/algos_BinCentric.cpp
         src/algos/algos_MultiBin.cpp
         src/algos/lower_bounds.cpp
-        src/algos/utils.cpp
+        src/algos/algo_utils.cpp
     )
 
     set(HEADER_ALGOS
@@ -73,7 +73,7 @@ if (include_algorithms)
         src/algos/algos_BinCentric.hpp
         src/algos/algos_MultiBin.hpp
         src/algos/lower_bounds.hpp
-        src/algos/utils.hpp
+        src/algos/algo_utils.hpp
     )
 endif()
 

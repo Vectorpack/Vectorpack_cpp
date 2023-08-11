@@ -25,8 +25,13 @@ let
         };
 
         vectorpack = vectorpack_lib.overrideAttrs (attr: {
-            cmakeFlags = ''-Dbuild_executable=ON'';
+            cmakeFlags = [ "-Dbuild_executable=ON" ];
         });
+
+        dev-shell = pkgs.mkShell {
+            name = "vectorpack_shell";
+            buildInputs = [ pkgs.cmake ];
+        };
     };
 in
     jobs

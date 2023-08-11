@@ -5,7 +5,6 @@
 #include <stdexcept>
 #include <algorithm> // For std::shuffle
 #include <random> // For the random generator
-#include <bits/stdc++.h>
 
 using namespace std;
 using namespace vectorpack;
