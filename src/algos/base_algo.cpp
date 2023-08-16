@@ -1,6 +1,7 @@
 #include "base_algo.hpp"
 
 #include <algorithm> // For stable_sort
+#include <fstream>
 
 BaseAlgo::BaseAlgo(const std::string& algo_name, const Instance &instance):
     name(algo_name),
@@ -58,6 +59,44 @@ void BaseAlgo::orderBinsId()
 {
     std::stable_sort(bins.begin(), bins.end(), bin_comparator_measure_increasing);
 }
+
+void BaseAlgo::writeSolution(const std::string& filename, const bool orderBins, const bool itemIdOneBased)
+{
+    std::ofstream f(filename, std::ios_base::trunc);
+    if (!f.is_open())
+    {
+        std::string s("Cannot write solution to file " + filename);
+        throw std::runtime_error(s);
+    }
+
+    if (orderBins)
+    {
+        orderBinsId();
+    }
+
+    // Write the number of bins in the first line
+    f << bins.size() << "\n";
+
+    // Then for each bin, one bin per line, write the number of items in the bin and the list of item ids
+    for (Bin* bin : bins)
+    {
+        std::vector<int> allocList = bin->getAllocList();
+        std::string s(std::to_string(allocList.size()));
+        for (int i : allocList)
+        {
+            if (itemIdOneBased)
+            {
+                i += 1;
+            }
+            s += " " + std::to_string(i);
+        }
+        f << s << "\n";
+    }
+
+    f.flush();
+    f.close();
+}
+
 
 void BaseAlgo::setSolution(BinList& bins)
 {
